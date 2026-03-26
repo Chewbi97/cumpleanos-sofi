@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Cumpleaños Sofi 🎂</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0d0d0d;
+      color: #ffffff;
+      font-family: 'Georgia', serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #welcome-screen {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #welcome-screen h1 {
+      font-size: 4rem;
+      letter-spacing: 0.2em;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    #welcome-screen p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeIn 2s ease 1.5s forwards;
+    }
+
+    #start-btn {
+      margin-top: 2rem;
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      border: 2px solid #ffffff;
+      background: transparent;
+      color: #ffffff;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      opacity: 0;
+      animation: fadeIn 2s ease 3s forwards;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #start-btn:hover {
+      background: #ffffff;
+      color: #0d0d0d;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="heartCanvas"></canvas>
+
+  <div id="welcome-screen">
+    <h1>Feliz Cumpleaños, Sofi 🎂</h1>
+    <p>Un regalo hecho con amor</p>
+    <button id="start-btn">Abrir tu regalo ✨</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('heartCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Ecuación paramétrica del corazón
+    function heartX(t) {
+      return 16 * Math.pow(Math.sin(t), 3);
+    }
+    function heartY(t) {
+      return -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+    }
+
+    // Crear partículas
+    const particles = [];
+    const TOTAL = 180;
+    const SCALE = 18;
+
+    for (let i = 0; i < TOTAL; i++) {
+      const t = (i / TOTAL) * 2 * Math.PI;
+      particles.push({
+        // Posición destino (el corazón)
+        tx: canvas.width / 2 + heartX(t) * SCALE,
+        ty: canvas.height / 2 + heartY(t) * SCALE,
+        // Posición inicial aleatoria
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2.5 + 1,
+        color: `hsl(${Math.random() * 40 + 340}, 90%, ${Math.random() * 30 + 60}%)`,
+        speed: Math.random() * 0.008 + 0.003,
+      });
+    }
+
+    let gathered = false;
+    let timer = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      timer += 0.005;
+
+      particles.forEach(p => {
+        if (!gathered) {
+          // Moverse hacia el corazón
+          p.x += (p.tx - p.x) * p.speed;
+          p.y += (p.ty - p.y) * p.speed;
+        } else {
+          // Flotar suavemente
+          p.x = p.tx + Math.sin(timer + p.speed * 100) * 4;
+          p.y = p.ty + Math.cos(timer + p.speed * 100) * 4;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+
+      // Después de 2.5s las partículas llegaron y flotan
+      if (timer > 8.5) gathered = true;
+    }
+
+    animate();
+  </script>
+
+</body>
+</html>
