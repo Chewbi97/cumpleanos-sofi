@@ -1,432 +1,681 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Feliz Cumpleaños Sofi 🎂</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #0d0d0d;
-      color: #fff;
-      font-family: 'Georgia', serif;
-      height: 100vh;
-      overflow: hidden;
-    }
-    #welcome-screen {
-      position: relative;
-      z-index: 1;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    #welcome-screen h1 {
-      font-size: 4rem;
-      letter-spacing: 0.2em;
-      opacity: 0;
-      animation: fadeIn 2s ease forwards;
-    }
-    #welcome-screen p {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-      opacity: 0;
-      animation: fadeIn 2s ease 1.5s forwards;
-    }
-    #start-btn {
-      margin-top: 2rem;
-      padding: 1rem 2.5rem;
-      font-size: 1rem;
-      border: 2px solid #fff;
-      background: transparent;
-      color: #fff;
-      cursor: pointer;
-      letter-spacing: 0.1em;
-      opacity: 0;
-      animation: fadeIn 2s ease 3s forwards;
-      transition: background 0.3s, color 0.3s;
-    }
-    #start-btn:hover { background: #fff; color: #0d0d0d; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feliz Cumpleaños Sofi 🎂</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    #album-screen {
-      display: none;
-      position: fixed;
-      z-index: 2;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
-    #album-screen.active { display: block; }
+      body {
+        background: #fff0f5;
+        color: #5a1028;
+        font-family: "Playfair Display", Georgia, serif;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-    #album-canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
+      #bg-texture {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.12;
+        background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ff4d7d' fill-opacity='1'%3E%3Cpath d='M40 35c-1-4-4-7-8-7s-8 4-8 8c0 7 8 14 16 20 8-6 16-13 16-20 0-4-4-8-8-8s-7 3-8 7z'/%3E%3C/g%3E%3C/svg%3E");
+      }
 
-    #slide-info {
-      position: absolute;
-      bottom: 60px;
-      width: 100%;
-      text-align: center;
-      z-index: 5;
-      pointer-events: none;
-    }
-    #slide-year {
-      font-size: 0.9rem;
-      letter-spacing: 0.35em;
-      color: #f472b6;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-    }
-    #slide-phrase {
-      font-size: 1.1rem;
-      font-style: italic;
-      color: rgba(255,255,255,0.85);
-    }
-    #progress-bar {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 420px;
-      height: 3px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 2px;
-      z-index: 5;
-    }
-    #progress-fill {
-      height: 100%;
-      width: 0%;
-      background: #f472b6;
-      border-radius: 2px;
-      transition: width linear;
-    }
-    #slide-counter {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.4);
-      z-index: 5;
-      letter-spacing: 0.1em;
-    }
-    @keyframes fadeIn { to { opacity: 1; } }
-  </style>
-</head>
-<body>
+      #welcome-screen {
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+      }
 
-  <canvas id="heartCanvas" style="position:fixed;top:0;left:0;z-index:0;"></canvas>
+      #welcome-screen h1 {
+        color: #be185d;
+        text-shadow: 0 0 40px rgba(190, 24, 93, 0.2);
+      }
 
-  <div id="welcome-screen">
-    <h1>Feliz Cumpleaños, Sofi 🎂</h1>
-    <p>Un regalo hecho con amor</p>
-    <button id="start-btn">Abrir tu regalo ✨</button>
-  </div>
+      #welcome-screen p {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        color: #9d174d;
+        opacity: 0;
+        animation: fadeIn 2s ease 1.5s forwards;
+      }
 
-  <div id="album-screen">
-    <canvas id="album-canvas"></canvas>
-    <div id="slide-counter"></div>
-    <div id="slide-info">
-      <div id="slide-year"></div>
-      <div id="slide-phrase"></div>
+      #start-btn {
+        margin-top: 2.5rem;
+        padding: 1rem 2.8rem;
+        font-size: 1rem;
+        font-family: "Playfair Display", serif;
+        border: 2px solid #be185d;
+        background: transparent;
+        color: #be185d;
+        cursor: pointer;
+        letter-spacing: 0.15em;
+        opacity: 0;
+        animation: fadeIn 2s ease 3s forwards;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        border-radius: 4px;
+      }
+      #start-btn:hover {
+        background: #be185d;
+        color: #fff0f5;
+      }
+
+      #album-screen {
+        display: none;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #album-screen.active {
+        display: block;
+      }
+
+      #album-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #slide-info {
+        position: absolute;
+        bottom: 60px;
+        width: 100%;
+        text-align: center;
+        z-index: 5;
+        pointer-events: none;
+      }
+      #slide-year {
+        font-size: 0.85rem;
+        letter-spacing: 0.4em;
+        color: #ff85a1;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+      #slide-phrase {
+        font-size: 1.1rem;
+        color: #ffb3c6;
+        font-style: italic;
+      }
+      #progress-bar {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 420px;
+        height: 3px;
+        background: rgba(255, 133, 161, 0.15);
+        border-radius: 2px;
+        z-index: 5;
+      }
+      #progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #ff4d7d;
+        border-radius: 2px;
+        transition: width linear;
+      }
+      #slide-counter {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 0.8rem;
+        color: rgba(255, 179, 198, 0.4);
+        z-index: 5;
+        letter-spacing: 0.1em;
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bg-texture"></div>
+    <canvas
+      id="heartCanvas"
+      style="position: fixed; top: 0; left: 0; z-index: 0"
+    ></canvas>
+
+    <div id="welcome-screen">
+      <h1>Feliz Cumpleaños, Sofi 🎂</h1>
+      <p>Un regalo hecho con amor</p>
+      <button id="start-btn">Abre tu regalo ✨</button>
     </div>
-    <div id="progress-bar"><div id="progress-fill"></div></div>
-  </div>
 
-  <script>
-    // ── DATOS ──
-    const slides = [
-      { year: '2012', phrase: 'El inicio de tu historia ✨', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+1' },
-      { year: '2013', phrase: 'Cada día más tú 🌸', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+2' },
-      { year: '2014', phrase: 'Creciendo con gracia 🌷', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+3' },
-      { year: '2015', phrase: 'Llena de luz y alegría ☀️', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+4' },
-      { year: '2016', phrase: 'Tu sonrisa lo ilumina todo 😊', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+5' },
-      { year: '2017', phrase: 'Aventuras sin fin 🌟', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+6' },
-      { year: '2018', phrase: 'Tan valiente, tan especial 💫', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+7' },
-      { year: '2019', phrase: 'El mundo es tuyo 🌍', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+8' },
-      { year: '2020', phrase: 'Brillando a tu manera ⭐', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+9' },
-      { year: '2021', phrase: 'Fuerte ante todo 💪', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+10' },
-      { year: '2022', phrase: 'Más hermosa cada día 🌺', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+11' },
-      { year: '2023', phrase: 'Tu historia sigue escribiéndose 📖', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+12' },
-      { year: '2024', phrase: 'Imparable 🚀', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+13' },
-      { year: '2025', phrase: 'Maravillando mi mundo 🎆', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+14' },
-      { year: '2026', phrase: '14 años de pura magia 🎂', src: 'https://placehold.co/414x324/1a1a2e/f472b6?text=Año+14' },
-    ];
+    <div id="album-screen">
+      <canvas id="album-canvas"></canvas>
+      <div id="slide-counter"></div>
+      <div id="slide-info">
+        <div id="slide-year"></div>
+        <div id="slide-phrase"></div>
+      </div>
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+    </div>
 
-    const SLIDE_DURATION = 5000;
+    <script>
+      const slides = [
+        {
+          year: "2012",
+          phrase: "El inicio de tu historia ✨",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+0",
+        },
+        {
+          year: "2013",
+          phrase: "Cada día más tú 🌸",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+1",
+        },
+        {
+          year: "2014",
+          phrase: "Creciendo con gracia 🌷",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+2",
+        },
+        {
+          year: "2015",
+          phrase: "Llena de luz y alegría ☀️",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+3",
+        },
+        {
+          year: "2016",
+          phrase: "Tu sonrisa lo ilumina todo 😊",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+4",
+        },
+        {
+          year: "2017",
+          phrase: "Aventuras sin fin 🌟",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+5",
+        },
+        {
+          year: "2018",
+          phrase: "Tan valiente, tan especial 💫",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+6",
+        },
+        {
+          year: "2019",
+          phrase: "El mundo es tuyo 🌍",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+7",
+        },
+        {
+          year: "2020",
+          phrase: "Brillando a tu manera ⭐",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+8",
+        },
+        {
+          year: "2021",
+          phrase: "Fuerte ante todo 💪",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+9",
+        },
+        {
+          year: "2022",
+          phrase: "Más hermosa cada día 🌺",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+10",
+        },
+        {
+          year: "2023",
+          phrase: "Tu historia sigue escribiéndose 📖",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+11",
+        },
+        {
+          year: "2024",
+          phrase: "Imparable 🚀",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+12",
+        },
+        {
+          year: "2025",
+          phrase: "Maravillando mi mundo 🎆",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+13",
+        },
+        {
+          year: "2026",
+          phrase: "14 años de pura magia 🎂",
+          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+14",
+        },
+      ];
 
-    // ── CORAZÓN (pantalla bienvenida) ──
-    const hCanvas = document.getElementById('heartCanvas');
-    const hCtx = hCanvas.getContext('2d');
-    hCanvas.width = window.innerWidth;
-    hCanvas.height = window.innerHeight;
-    window.addEventListener('resize', () => {
+      const SLIDE_DURATION = 16000;
+
+      const albumAudio = new Audio(
+        "assets/audio/Alejandra Guzmán - Yo Te Esperaba.mp3",
+      );
+      albumAudio.volume = 0.8;
+
+      // ── CORAZÓN ──
+      const hCanvas = document.getElementById("heartCanvas");
+      const hCtx = hCanvas.getContext("2d");
       hCanvas.width = window.innerWidth;
       hCanvas.height = window.innerHeight;
-    });
 
-    function heartX(t) { return 16 * Math.pow(Math.sin(t), 3); }
-    function heartY(t) { return -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t)); }
+      function heartX(t) {
+        return 16 * Math.pow(Math.sin(t), 3);
+      }
+      function heartY(t) {
+        return -(
+          13 * Math.cos(t) -
+          5 * Math.cos(2 * t) -
+          2 * Math.cos(3 * t) -
+          Math.cos(4 * t)
+        );
+      }
 
-    const particles = [];
-    for (let i = 0; i < 180; i++) {
-      const t = (i / 180) * 2 * Math.PI;
-      particles.push({
-        tx: hCanvas.width/2 + heartX(t)*18,
-        ty: hCanvas.height/2 + heartY(t)*18,
-        x: Math.random() * hCanvas.width,
-        y: Math.random() * hCanvas.height,
-        size: Math.random() * 2.5 + 1,
-        color: `hsl(${Math.random()*40+340},90%,${Math.random()*30+60}%)`,
-        speed: Math.random() * 0.008 + 0.003,
-      });
-    }
-    let gathered = false, hTimer = 0;
-    function animateHeart() {
-      requestAnimationFrame(animateHeart);
-      hCtx.clearRect(0, 0, hCanvas.width, hCanvas.height);
-      hTimer += 0.005;
-      particles.forEach(p => {
-        if (!gathered) {
-          p.x += (p.tx - p.x) * p.speed;
-          p.y += (p.ty - p.y) * p.speed;
-        } else {
-          p.x = p.tx + Math.sin(hTimer + p.speed*100)*4;
-          p.y = p.ty + Math.cos(hTimer + p.speed*100)*4;
+      const particles = [];
+
+      function createParticles() {
+        particles.length = 0;
+        const scale = Math.min(hCanvas.width, hCanvas.height) * 0.028;
+        for (let i = 0; i < 180; i++) {
+          const t = (i / 180) * 2 * Math.PI;
+          particles.push({
+            tx: hCanvas.width / 2 + heartX(t) * scale,
+            ty: hCanvas.height / 2 + heartY(t) * scale,
+            x: Math.random() * hCanvas.width,
+            y: Math.random() * hCanvas.height,
+            size: Math.random() * 2.5 + 1,
+            color: `hsl(${Math.random() * 40 + 320},90%,${Math.random() * 20 + 65}%)`,
+            speed: Math.random() * 0.008 + 0.003,
+          });
         }
-        hCtx.beginPath();
-        hCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        hCtx.fillStyle = p.color;
-        hCtx.fill();
+      }
+
+      createParticles();
+
+      window.addEventListener("resize", () => {
+        hCanvas.width = window.innerWidth;
+        hCanvas.height = window.innerHeight;
+        createParticles();
       });
-      if (hTimer > 10) gathered = true;
-    }
-    animateHeart();
 
-    // ── ÁLBUM CANVAS ──
-    const ac = document.getElementById('album-canvas');
-    const actx = ac.getContext('2d');
-    let W, H;
+      let gathered = false,
+        hTimer = 0;
 
-    function resize() {
-      W = ac.width = window.innerWidth;
-      H = ac.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
+      function animateHeart() {
+        requestAnimationFrame(animateHeart);
+        hCtx.clearRect(0, 0, hCanvas.width, hCanvas.height);
+        hTimer += 0.005;
+        particles.forEach((p) => {
+          if (!gathered) {
+            p.x += (p.tx - p.x) * p.speed;
+            p.y += (p.ty - p.y) * p.speed;
+          } else {
+            p.x = p.tx + Math.sin(hTimer + p.speed * 100) * 4;
+            p.y = p.ty + Math.cos(hTimer + p.speed * 100) * 4;
+          }
+          hCtx.beginPath();
+          hCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          hCtx.fillStyle = p.color;
+          hCtx.fill();
+        });
+        if (hTimer > 8.5) gathered = true;
+      }
 
-    const leafColors = ['#1a5c1a','#166016','#0f4f0f','#1e6b1e','#145514'];
+      animateHeart();
+      // ── ÁLBUM ──
+      const ac = document.getElementById("album-canvas");
+      const actx = ac.getContext("2d");
+      let W, H;
+      function resize() {
+        W = ac.width = window.innerWidth;
+        H = ac.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
 
-    function leaf(x, y, angle, size, sway) {
-      actx.save();
-      actx.translate(x, y);
-      actx.rotate(angle + sway);
-      actx.beginPath();
-      actx.moveTo(0, 0);
-      actx.bezierCurveTo(size*0.5,-size*0.4, size*1.1,-size*0.2, size*1.2, 0);
-      actx.bezierCurveTo(size*1.1, size*0.2, size*0.5, size*0.4, 0, 0);
-      actx.fillStyle = leafColors[Math.floor((x+y)%5)];
-      actx.fill();
-      actx.strokeStyle = 'rgba(0,60,0,0.4)';
-      actx.lineWidth = 0.5;
-      actx.stroke();
-      actx.beginPath();
-      actx.moveTo(0,0); actx.lineTo(size*1.2, 0);
-      actx.strokeStyle = 'rgba(0,80,0,0.5)';
-      actx.lineWidth = 0.6;
-      actx.stroke();
-      actx.restore();
-    }
+      const pinkLeafColors = [
+        "#7a1a3a",
+        "#8b1f42",
+        "#6b1535",
+        "#9e2450",
+        "#5a1028",
+      ];
 
-    function flower(x, y, size, pulse) {
-      const s = size * pulse;
-      for (let i = 0; i < 5; i++) {
+      function leaf(x, y, angle, size, sway) {
         actx.save();
         actx.translate(x, y);
-        actx.rotate((i/5)*Math.PI*2);
+        actx.rotate(angle + sway);
         actx.beginPath();
-        actx.ellipse(0, -s*1.1, s*0.5, s*0.9, 0, 0, Math.PI*2);
-        actx.fillStyle = '#f472b6';
-        actx.globalAlpha = 0.85;
-        actx.fill();
+        actx.moveTo(0, 0);
+        actx.bezierCurveTo(
+          size * 0.5,
+          -size * 0.4,
+          size * 1.1,
+          -size * 0.2,
+          size * 1.2,
+          0,
+        );
+        actx.bezierCurveTo(
+          size * 1.1,
+          size * 0.2,
+          size * 0.5,
+          size * 0.4,
+          0,
+          0,
+        );
+        actx.strokeStyle = "rgba(120,20,60,0.4)";
+        actx.lineWidth = 0.5;
+        actx.stroke();
+        actx.beginPath();
+        actx.moveTo(0, 0);
+        actx.lineTo(size * 1.2, 0);
+        actx.strokeStyle = "rgba(150,30,70,0.5)";
+        actx.lineWidth = 0.6;
+        actx.stroke();
         actx.restore();
       }
-      actx.beginPath();
-      actx.arc(x, y, s*0.5, 0, Math.PI*2);
-      actx.fillStyle = '#fef08a';
-      actx.globalAlpha = 1;
-      actx.fill();
-    }
 
-    function vine(points) {
-      actx.beginPath();
-      actx.moveTo(points[0][0]*W/680, points[0][1]*H/500);
-      for (let i = 1; i < points.length-1; i++) {
-        const mx = ((points[i][0]+points[i+1][0])/2)*W/680;
-        const my = ((points[i][1]+points[i+1][1])/2)*H/500;
-        actx.quadraticCurveTo(points[i][0]*W/680, points[i][1]*H/500, mx, my);
+      function flower(x, y, size, pulse) {
+        const s = size * pulse;
+        const petalColors = [
+          "#ff85a1",
+          "#ff4d7d",
+          "#ffb3c6",
+          "#ff6b9d",
+          "#ff85a1",
+        ];
+        for (let i = 0; i < 5; i++) {
+          actx.save();
+          actx.translate(x, y);
+          actx.rotate((i / 5) * Math.PI * 2);
+          actx.beginPath();
+          actx.ellipse(0, -s * 1.1, s * 0.5, s * 0.9, 0, 0, Math.PI * 2);
+          actx.fillStyle = petalColors[i];
+          actx.globalAlpha = 0.85;
+          actx.fill();
+          actx.restore();
+        }
+        actx.beginPath();
+        actx.arc(x, y, s * 0.5, 0, Math.PI * 2);
+        actx.fillStyle = "#ffe0eb";
+        actx.globalAlpha = 1;
+        actx.fill();
       }
-      actx.strokeStyle = '#1a4a1a';
-      actx.lineWidth = 2.5;
-      actx.globalAlpha = 0.9;
-      actx.stroke();
-      actx.globalAlpha = 1;
-    }
 
-    function balloon(x, y, rx, ry, color, highlight, t, phase) {
-      const bx = x*W/680 + Math.sin(t*0.5+phase)*2;
-      const by = y*H/500 + Math.sin(t*0.8+phase)*5;
-      const grad = actx.createRadialGradient(bx-rx*0.3, by-ry*0.3, rx*0.05, bx, by, rx*1.1);
-      grad.addColorStop(0, highlight);
-      grad.addColorStop(0.4, color);
-      grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-      actx.beginPath();
-      actx.ellipse(bx, by, rx, ry, 0, 0, Math.PI*2);
-      actx.fillStyle = grad;
-      actx.fill();
-      actx.beginPath();
-      actx.ellipse(bx-rx*0.25, by-ry*0.25, rx*0.2, ry*0.15, -0.5, 0, Math.PI*2);
-      actx.fillStyle = 'rgba(255,255,255,0.35)';
-      actx.fill();
-      actx.beginPath();
-      actx.moveTo(bx, by+ry);
-      actx.bezierCurveTo(bx+8, by+ry+15, bx-5, by+ry+25, bx, by+ry+40);
-      actx.strokeStyle = color;
-      actx.lineWidth = 1.2;
-      actx.globalAlpha = 0.7;
-      actx.stroke();
-      actx.globalAlpha = 1;
-    }
-
-    // imagen actual con fade
-    let currentImg = new Image();
-    let nextImg = new Image();
-    let imgAlpha = 1;
-    let fadingIn = false;
-
-    function loadSlideImage(src, cb) {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => cb(img);
-      img.src = src;
-    }
-
-    let albumT = 0;
-    let currentSlide = 0;
-    let slideTimer = null;
-
-    function drawAlbum() {
-      if (!albumRunning) return;
-      requestAnimationFrame(drawAlbum);
-      albumT += 0.015;
-      actx.clearRect(0, 0, W, H);
-      actx.fillStyle = '#0d0d0d';
-      actx.fillRect(0, 0, W, H);
-
-      // Vines
-      vine([[30,500],[28,420],[35,340],[25,260],[40,180],[30,100],[50,40]]);
-      vine([[650,500],[648,410],[640,330],[655,250],[642,170],[650,90],[630,40]]);
-      vine([[30,250],[60,230],[90,240],[110,220]]);
-      vine([[650,250],[620,230],[590,240],[570,220]]);
-
-      // Hojas izquierda
-      [[45,480,0.3,18],[28,430,-0.5,16],[50,390,0.6,20],[25,350,-0.3,15],
-       [48,310,0.4,18],[30,270,-0.6,16],[52,230,0.3,20],[28,190,-0.4,15],
-       [45,150,0.5,18],[35,110,-0.3,16],[50,70,0.4,19]].forEach(([x,y,a,s]) => {
-        leaf(x*W/680, y*H/500, a, s, Math.sin(albumT*0.6+x*0.05)*0.1);
-      });
-
-      // Hojas derecha
-      [[635,480,-0.3,18],[652,430,0.5,16],[630,390,-0.6,20],[655,350,0.3,15],
-       [632,310,-0.4,18],[650,270,0.6,16],[628,230,-0.3,20],[652,190,0.4,15],
-       [635,150,-0.5,18],[645,110,0.3,16],[630,70,-0.4,19]].forEach(([x,y,a,s]) => {
-        leaf(x*W/680, y*H/500, Math.PI+a, s, Math.sin(albumT*0.6+x*0.05)*0.1);
-      });
-
-      // Flores
-      [[38,460,7],[55,380,6],[32,300,8],[50,220,6],[38,140,7],[55,80,6],
-       [642,460,7],[625,380,6],[648,300,8],[630,220,6],[642,140,7],[625,80,6]].forEach(([x,y,s]) => {
-        flower(x*W/680, y*H/500, s, 1+Math.sin(albumT*1.2+x*0.1)*0.05);
-      });
-
-      // Globos
-      balloon(90, 200, 22, 28, '#be185d', '#fb7185', albumT, 0);
-      balloon(65, 320, 18, 23, '#7e22ce', '#c084fc', albumT, 1.5);
-      balloon(82, 120, 20, 25, '#c2410c', '#fb923c', albumT, 0.8);
-      balloon(590, 180, 22, 28, '#9d174d', '#f472b6', albumT, 2.1);
-      balloon(615, 310, 18, 23, '#6d28d9', '#a78bfa', albumT, 0.4);
-      balloon(598, 90, 20, 25, '#b45309', '#fcd34d', albumT, 1.2);
-
-      // Marco portarretratos
-      const fx = 130*W/680, fy = 45*H/500;
-      const fw = 420*W/680, fh = 330*H/500;
-      actx.strokeStyle = '#be185d';
-      actx.lineWidth = 2.5;
-      actx.globalAlpha = 0.7;
-      actx.strokeRect(fx, fy, fw, fh);
-      actx.strokeStyle = '#f472b6';
-      actx.lineWidth = 1;
-      actx.globalAlpha = 0.2;
-      actx.strokeRect(fx+5, fy+5, fw-10, fh-10);
-      actx.globalAlpha = 1;
-
-      // Foto con fade
-      if (currentImg.complete && currentImg.naturalWidth > 0) {
-        actx.globalAlpha = imgAlpha;
-        actx.drawImage(currentImg, fx+3, fy+3, fw-6, fh-6);
+      function vine(points) {
+        actx.beginPath();
+        actx.moveTo((points[0][0] * W) / 680, (points[0][1] * H) / 500);
+        for (let i = 1; i < points.length - 1; i++) {
+          const mx = (((points[i][0] + points[i + 1][0]) / 2) * W) / 680;
+          const my = (((points[i][1] + points[i + 1][1]) / 2) * H) / 500;
+          actx.quadraticCurveTo(
+            (points[i][0] * W) / 680,
+            (points[i][1] * H) / 500,
+            mx,
+            my,
+          );
+        }
+        actx.strokeStyle = "#5a1028";
+        actx.lineWidth = 2.5;
+        actx.globalAlpha = 0.9;
+        actx.stroke();
         actx.globalAlpha = 1;
       }
-    }
 
-    let albumRunning = false;
-
-    function showSlide(index, cb) {
-      loadSlideImage(slides[index].src, (img) => {
-        currentImg = img;
-        imgAlpha = 0;
-        document.getElementById('slide-year').textContent = slides[index].year;
-        document.getElementById('slide-phrase').textContent = slides[index].phrase;
-        document.getElementById('slide-counter').textContent = `${index+1} / ${slides.length}`;
-
-        const fill = document.getElementById('progress-fill');
-        fill.style.transition = 'none';
-        fill.style.width = '0%';
-        setTimeout(() => {
-          fill.style.transition = `width ${SLIDE_DURATION}ms linear`;
-          fill.style.width = '100%';
-        }, 50);
-
-        let fadeT = 0;
-        function fadeIn() {
-          fadeT += 0.03;
-          imgAlpha = Math.min(fadeT, 1);
-          if (fadeT < 1) requestAnimationFrame(fadeIn);
-          else if (cb) cb();
-        }
-        fadeIn();
-      });
-    }
-
-    function nextSlide() {
-      currentSlide++;
-      if (currentSlide < slides.length) {
-        showSlide(currentSlide);
-        slideTimer = setTimeout(nextSlide, SLIDE_DURATION);
-      } else {
-        console.log('Álbum terminado → Fase 3: poema');
+      function balloon(x, y, rx, ry, color, highlight, t, phase) {
+        const bx = (x * W) / 680 + Math.sin(t * 0.5 + phase) * 2;
+        const by = (y * H) / 500 + Math.sin(t * 0.8 + phase) * 5;
+        const grad = actx.createRadialGradient(
+          bx - rx * 0.3,
+          by - ry * 0.3,
+          rx * 0.05,
+          bx,
+          by,
+          rx * 1.1,
+        );
+        grad.addColorStop(0, highlight);
+        grad.addColorStop(0.4, color);
+        grad.addColorStop(1, "rgba(0,0,0,0.5)");
+        actx.beginPath();
+        actx.ellipse(bx, by, rx, ry, 0, 0, Math.PI * 2);
+        actx.fillStyle = grad;
+        actx.fill();
+        actx.beginPath();
+        actx.ellipse(
+          bx - rx * 0.25,
+          by - ry * 0.25,
+          rx * 0.2,
+          ry * 0.15,
+          -0.5,
+          0,
+          Math.PI * 2,
+        );
+        actx.fillStyle = "rgba(255,255,255,0.35)";
+        actx.fill();
+        actx.beginPath();
+        actx.moveTo(bx, by + ry);
+        actx.bezierCurveTo(
+          bx + 8,
+          by + ry + 15,
+          bx - 5,
+          by + ry + 25,
+          bx,
+          by + ry + 40,
+        );
+        actx.strokeStyle = color;
+        actx.lineWidth = 1.2;
+        actx.globalAlpha = 0.7;
+        actx.stroke();
+        actx.globalAlpha = 1;
       }
-    }
 
-    document.getElementById('start-btn').addEventListener('click', () => {
-      document.getElementById('welcome-screen').style.display = 'none';
-      document.getElementById('album-screen').classList.add('active');
-      albumRunning = true;
-      drawAlbum();
-      showSlide(0);
-      slideTimer = setTimeout(nextSlide, SLIDE_DURATION);
-    });
-  </script>
-</body>
+      let currentImg = new Image();
+      let imgAlpha = 1;
+      let albumT = 0;
+      let currentSlide = 0;
+      let albumRunning = false;
+
+      function loadSlideImage(src, cb) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => cb(img);
+        img.src = src;
+      }
+
+      function drawAlbum() {
+        if (!albumRunning) return;
+        requestAnimationFrame(drawAlbum);
+        albumT += 0.015;
+
+        actx.clearRect(0, 0, W, H);
+        actx.fillStyle = "#1a0a10";
+        actx.fillRect(0, 0, W, H);
+
+        vine([
+          [30, 500],
+          [28, 420],
+          [35, 340],
+          [25, 260],
+          [40, 180],
+          [30, 100],
+          [50, 40],
+        ]);
+        vine([
+          [650, 500],
+          [648, 410],
+          [640, 330],
+          [655, 250],
+          [642, 170],
+          [650, 90],
+          [630, 40],
+        ]);
+        vine([
+          [30, 250],
+          [60, 230],
+          [90, 240],
+          [110, 220],
+        ]);
+        vine([
+          [650, 250],
+          [620, 230],
+          [590, 240],
+          [570, 220],
+        ]);
+
+        [
+          [45, 480, 0.3, 18],
+          [28, 430, -0.5, 16],
+          [50, 390, 0.6, 20],
+          [25, 350, -0.3, 15],
+          [48, 310, 0.4, 18],
+          [30, 270, -0.6, 16],
+          [52, 230, 0.3, 20],
+          [28, 190, -0.4, 15],
+          [45, 150, 0.5, 18],
+          [35, 110, -0.3, 16],
+          [50, 70, 0.4, 19],
+        ].forEach(([x, y, a, s]) => {
+          leaf(
+            (x * W) / 680,
+            (y * H) / 500,
+            a,
+            s,
+            Math.sin(albumT * 0.6 + x * 0.05) * 0.1,
+          );
+        });
+
+        [
+          [635, 480, -0.3, 18],
+          [652, 430, 0.5, 16],
+          [630, 390, -0.6, 20],
+          [655, 350, 0.3, 15],
+          [632, 310, -0.4, 18],
+          [650, 270, 0.6, 16],
+          [628, 230, -0.3, 20],
+          [652, 190, 0.4, 15],
+          [635, 150, -0.5, 18],
+          [645, 110, 0.3, 16],
+          [630, 70, -0.4, 19],
+        ].forEach(([x, y, a, s]) => {
+          leaf(
+            (x * W) / 680,
+            (y * H) / 500,
+            Math.PI + a,
+            s,
+            Math.sin(albumT * 0.6 + x * 0.05) * 0.1,
+          );
+        });
+
+        [
+          [38, 460, 7],
+          [55, 380, 6],
+          [32, 300, 8],
+          [50, 220, 6],
+          [38, 140, 7],
+          [55, 80, 6],
+          [642, 460, 7],
+          [625, 380, 6],
+          [648, 300, 8],
+          [630, 220, 6],
+          [642, 140, 7],
+          [625, 80, 6],
+        ].forEach(([x, y, s]) => {
+          flower(
+            (x * W) / 680,
+            (y * H) / 500,
+            s,
+            1 + Math.sin(albumT * 1.2 + x * 0.1) * 0.05,
+          );
+        });
+
+        balloon(90, 200, 22, 28, "#be185d", "#fb7185", albumT, 0);
+        balloon(65, 320, 18, 23, "#9d174d", "#f472b6", albumT, 1.5);
+        balloon(82, 120, 20, 25, "#831843", "#fda4af", albumT, 0.8);
+        balloon(590, 180, 22, 28, "#be185d", "#fb7185", albumT, 2.1);
+        balloon(615, 310, 18, 23, "#9d174d", "#f9a8d4", albumT, 0.4);
+        balloon(598, 90, 20, 25, "#881337", "#fecdd3", albumT, 1.2);
+
+        const fx = (130 * W) / 680,
+          fy = (45 * H) / 500;
+        const fw = (420 * W) / 680,
+          fh = (330 * H) / 500;
+
+        actx.strokeStyle = "#ff4d7d";
+        actx.lineWidth = 2.5;
+        actx.globalAlpha = 0.7;
+        actx.strokeRect(fx, fy, fw, fh);
+        actx.strokeStyle = "#ffb3c6";
+        actx.lineWidth = 1;
+        actx.globalAlpha = 0.2;
+        actx.strokeRect(fx + 5, fy + 5, fw - 10, fh - 10);
+        actx.globalAlpha = 1;
+
+        if (currentImg.complete && currentImg.naturalWidth > 0) {
+          actx.globalAlpha = imgAlpha;
+          actx.drawImage(currentImg, fx + 3, fy + 3, fw - 6, fh - 6);
+          actx.globalAlpha = 1;
+        }
+      }
+
+      function showSlide(index) {
+        loadSlideImage(slides[index].src, (img) => {
+          currentImg = img;
+          imgAlpha = 0;
+          document.getElementById("slide-year").textContent =
+            slides[index].year;
+          document.getElementById("slide-phrase").textContent =
+            slides[index].phrase;
+          document.getElementById("slide-counter").textContent =
+            `${index + 1} / ${slides.length}`;
+          const fill = document.getElementById("progress-fill");
+          fill.style.transition = "none";
+          fill.style.width = "0%";
+          setTimeout(() => {
+            fill.style.transition = `width ${SLIDE_DURATION}ms linear`;
+            fill.style.width = "100%";
+          }, 50);
+          let fadeT = 0;
+          function fadeIn() {
+            fadeT += 0.03;
+            imgAlpha = Math.min(fadeT, 1);
+            if (fadeT < 1) requestAnimationFrame(fadeIn);
+          }
+          fadeIn();
+        });
+      }
+
+      function nextSlide() {
+        currentSlide++;
+        if (currentSlide < slides.length) {
+          showSlide(currentSlide);
+          setTimeout(nextSlide, SLIDE_DURATION);
+        } else {
+          console.log("Álbum terminado → Fase 3: poema");
+        }
+      }
+
+      document.getElementById("start-btn").addEventListener("click", () => {
+        document.getElementById("welcome-screen").style.display = "none";
+        document.getElementById("album-screen").classList.add("active");
+        albumRunning = true;
+        drawAlbum();
+        showSlide(0);
+        setTimeout(nextSlide, SLIDE_DURATION);
+        albumAudio.play();
+      });
+    </script>
+  </body>
 </html>
