@@ -198,7 +198,7 @@
     ></canvas>
 
     <div id="welcome-screen">
-      <h1>Feliz Cumpleaños, Sofi 🎂</h1>
+      <h1>Feliz Cumpleaños Sofi 🎂</h1>
       <p>Un regalo hecho con amor</p>
       <button id="start-btn">Abre tu regalo ✨</button>
     </div>
@@ -214,89 +214,133 @@
     </div>
 
     <script>
+      // ── SLIDES ──
+      // Reemplaza los nombres de archivo con los nombres reales de tus fotos.
+      // Cada carpeta assets/fotos/0/ a assets/fotos/14/ corresponde a un año.
       const slides = [
         {
           year: "2012",
           phrase: "El inicio de tu historia ✨",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+1",
+          photos: [
+            "assets/fotos/0/foto1.jpeg",
+            "assets/fotos/0/foto2.jpeg",
+            "assets/fotos/0/foto3.jpeg",
+          ],
         },
         {
           year: "2013",
           phrase: "Cada día más tú 🌸",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+2",
+          photos: ["assets/fotos/1/foto1.jpeg", "assets/fotos/1/foto2.jpeg"],
         },
         {
           year: "2014",
           phrase: "Creciendo con gracia 🌷",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+3",
+          photos: ["assets/fotos/2/foto1.jpeg", "assets/fotos/2/foto2.jpeg"],
         },
         {
           year: "2015",
           phrase: "Llena de luz y alegría ☀️",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+4",
+          photos: [
+            "assets/fotos/3/foto1.jpeg",
+            "assets/fotos/3/foto2.jpeg",
+            "assets/fotos/3/foto3.jpeg",
+          ],
         },
         {
           year: "2016",
           phrase: "Tu sonrisa lo ilumina todo 😊",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+5",
+          photos: [
+            "assets/fotos/4/foto1.jpeg",
+            "assets/fotos/4/foto2.jpeg",
+            "assets/fotos/4/foto3.jpeg",
+          ],
         },
         {
           year: "2017",
           phrase: "Aventuras sin fin 🌟",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+6",
+          photos: ["assets/fotos/5/foto1.png", "assets/fotos/5/foto2.jpeg"],
         },
         {
           year: "2018",
           phrase: "Tan valiente, tan especial 💫",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+7",
+          photos: [
+            "assets/fotos/6/foto1.jpeg",
+            "assets/fotos/6/foto2.jpeg",
+            "assets/fotos/6/foto3.jpeg",
+          ],
         },
         {
           year: "2019",
           phrase: "El mundo es tuyo 🌍",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+8",
+          photos: ["assets/fotos/7/foto1.jpeg", "assets/fotos/7/foto2.jpeg"],
         },
         {
           year: "2020",
           phrase: "Brillando a tu manera ⭐",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+9",
+          photos: [
+            "assets/fotos/8/foto1.jpeg",
+            "assets/fotos/8/foto2.jpeg",
+            "assets/fotos/8/foto3.jpeg",
+          ],
         },
         {
           year: "2021",
           phrase: "Fuerte ante todo 💪",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+10",
+          photos: [
+            "assets/fotos/9/foto1.jpeg",
+            "assets/fotos/9/foto2.jpeg",
+            "assets/fotos/9/foto3.jpeg",
+          ],
         },
         {
           year: "2022",
           phrase: "Más hermosa cada día 🌺",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+11",
+          photos: ["assets/fotos/10/foto1.jpeg", "assets/fotos/10/foto2.jpeg"],
         },
         {
           year: "2023",
           phrase: "Tu historia sigue escribiéndose 📖",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+12",
+          photos: ["assets/fotos/11/foto1.jpeg", "assets/fotos/11/foto2.jpeg"],
         },
         {
           year: "2024",
           phrase: "Imparable 🚀",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+13",
+          photos: [
+            "assets/fotos/12/foto1.jpeg",
+            "assets/fotos/12/foto2.jpeg",
+            "assets/fotos/12/foto3.jpeg",
+          ],
         },
         {
           year: "2025",
           phrase: "Maravillando mi mundo 🎆",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+14",
+          photos: ["assets/fotos/13/foto1.jpeg", "assets/fotos/13/foto2.jpeg"],
         },
         {
           year: "2026",
           phrase: "14 años de pura magia 🎂",
-          src: "https://placehold.co/414x324/1a1a2e/f472b6?text=Año+15",
+          photos: ["assets/fotos/14/foto1.jpeg"],
         },
       ];
 
-      const SLIDE_DURATION = 16000;
+      // Música dura hasta 3:25 (205s) → 205000ms / 15 slides = ~13600ms por slide
+      const SLIDE_DURATION = 13600;
+
       const albumAudio = new Audio(
         "assets/audio/Alejandra Guzmán - Yo Te Esperaba.mp3",
       );
       albumAudio.volume = 0.8;
+
+      // Fade out de la música: de 3:20 (200s) a 3:25 (205s) baja gradualmente a 0
+      albumAudio.addEventListener("timeupdate", () => {
+        const t = albumAudio.currentTime;
+        if (t >= 200 && t < 205) {
+          albumAudio.volume = Math.max(0, 0.8 * (1 - (t - 200) / 5));
+        } else if (t >= 205) {
+          albumAudio.volume = 0;
+          albumAudio.pause();
+        }
+      });
 
       // ── CORAZÓN ──
       const hCanvas = document.getElementById("heartCanvas");
@@ -502,17 +546,57 @@
         actx.globalAlpha = 1;
       }
 
+      // Estado de imágenes con soporte crossfade
       let currentImg = new Image();
-      let imgAlpha = 1,
-        albumT = 0,
+      let nextImg = new Image();
+      let imgAlpha = 1;
+      let crossAlpha = 0;
+      let isCrossfading = false;
+      let albumT = 0,
         currentSlide = 0,
         albumRunning = false;
+      let slidePhotoTimers = [];
 
-      function loadSlideImage(src, cb) {
+      function loadImage(src, cb) {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => cb(img);
+        img.onerror = () => cb(null);
         img.src = src;
+      }
+
+      function preloadSlidePhotos(index, cb) {
+        const photos = slides[index].photos;
+        const imgs = new Array(photos.length);
+        let loaded = 0;
+        photos.forEach((src, i) => {
+          loadImage(src, (img) => {
+            imgs[i] = img;
+            if (++loaded === photos.length) cb(imgs);
+          });
+        });
+      }
+
+      function crossfadeTo(img) {
+        if (!img) return;
+        isCrossfading = true;
+        nextImg = img;
+        crossAlpha = 0;
+        const SPEED = 0.025;
+        function tick() {
+          if (!isCrossfading) return;
+          crossAlpha += SPEED;
+          if (crossAlpha >= 1) {
+            currentImg = nextImg;
+            imgAlpha = 1;
+            crossAlpha = 0;
+            isCrossfading = false;
+            return;
+          }
+          imgAlpha = 1 - crossAlpha;
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
       }
 
       function drawAlbum() {
@@ -641,37 +725,67 @@
         actx.strokeRect(fx + 5, fy + 5, fw - 10, fh - 10);
         actx.globalAlpha = 1;
 
-        if (currentImg.complete && currentImg.naturalWidth > 0) {
+        if (currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
           actx.globalAlpha = imgAlpha;
           actx.drawImage(currentImg, fx + 3, fy + 3, fw - 6, fh - 6);
-          actx.globalAlpha = 1;
         }
+        if (
+          isCrossfading &&
+          nextImg &&
+          nextImg.complete &&
+          nextImg.naturalWidth > 0
+        ) {
+          actx.globalAlpha = crossAlpha;
+          actx.drawImage(nextImg, fx + 3, fy + 3, fw - 6, fh - 6);
+        }
+        actx.globalAlpha = 1;
       }
 
       function showSlide(index) {
-        loadSlideImage(slides[index].src, (img) => {
-          currentImg = img;
+        // Cancelar timers de fotos del slide anterior
+        slidePhotoTimers.forEach((t) => clearTimeout(t));
+        slidePhotoTimers = [];
+
+        const slide = slides[index];
+        document.getElementById("slide-year").textContent = slide.year;
+        document.getElementById("slide-phrase").textContent = slide.phrase;
+        document.getElementById("slide-counter").textContent =
+          `${index + 1} / ${slides.length}`;
+
+        const fill = document.getElementById("progress-fill");
+        fill.style.transition = "none";
+        fill.style.width = "0%";
+        setTimeout(() => {
+          fill.style.transition = `width ${SLIDE_DURATION}ms linear`;
+          fill.style.width = "100%";
+        }, 50);
+
+        preloadSlidePhotos(index, (imgs) => {
+          const valid = imgs.filter(Boolean);
+          if (!valid.length) return;
+
+          // Primera foto: fade-in suave desde 0
+          currentImg = valid[0];
           imgAlpha = 0;
-          document.getElementById("slide-year").textContent =
-            slides[index].year;
-          document.getElementById("slide-phrase").textContent =
-            slides[index].phrase;
-          document.getElementById("slide-counter").textContent =
-            `${index + 1} / ${slides.length}`;
-          const fill = document.getElementById("progress-fill");
-          fill.style.transition = "none";
-          fill.style.width = "0%";
-          setTimeout(() => {
-            fill.style.transition = `width ${SLIDE_DURATION}ms linear`;
-            fill.style.width = "100%";
-          }, 50);
+          isCrossfading = false;
           let fadeT = 0;
-          function fadeIn() {
-            fadeT += 0.03;
+          (function fadeIn() {
+            fadeT += 0.035;
             imgAlpha = Math.min(fadeT, 1);
             if (fadeT < 1) requestAnimationFrame(fadeIn);
+          })();
+
+          // Fotos restantes: crossfade distribuido en el tiempo del slide
+          if (valid.length > 1) {
+            const interval = (SLIDE_DURATION - 1500) / valid.length;
+            for (let i = 1; i < valid.length; i++) {
+              const t = setTimeout(
+                () => crossfadeTo(valid[i]),
+                1500 + interval * i,
+              );
+              slidePhotoTimers.push(t);
+            }
           }
-          fadeIn();
         });
       }
 
@@ -1181,6 +1295,8 @@
             document.getElementById("album-screen").classList.add("active");
             albumRunning = true;
             currentSlide = 0;
+            slidePhotoTimers.forEach((t) => clearTimeout(t));
+            slidePhotoTimers = [];
             drawAlbum();
             showSlide(0);
             albumAudio.play();
