@@ -49,6 +49,10 @@
       #welcome-screen h1 {
         color: #be185d;
         text-shadow: 0 0 40px rgba(190, 24, 93, 0.2);
+        font-size: 3.8rem;
+        font-weight: 700;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
       }
 
       #welcome-screen p {
@@ -113,13 +117,13 @@
       #slide-year {
         font-size: 0.85rem;
         letter-spacing: 0.4em;
-        color: #ff85a1;
+        color: #ffffff;
         text-transform: uppercase;
         margin-bottom: 0.5rem;
       }
       #slide-phrase {
         font-size: 1.1rem;
-        color: #ffb3c6;
+        color: #ffffff;
         font-style: italic;
       }
       #progress-bar {
@@ -182,12 +186,13 @@
       }
     </style>
   </head>
-  <div id="nav-dots">
-    <div class="nav-dot active" data-section="welcome" title="Inicio"></div>
-    <div class="nav-dot" data-section="album" title="Álbum"></div>
-    <div class="nav-dot" data-section="poem" title="Para ti"></div>
-  </div>
+
   <body>
+    <div id="nav-dots">
+      <div class="nav-dot active" data-section="welcome" title="Inicio"></div>
+      <div class="nav-dot" data-section="album" title="Álbum"></div>
+      <div class="nav-dot" data-section="poem" title="Para ti"></div>
+    </div>
     <div id="bg-texture"></div>
     <canvas
       id="heartCanvas"
@@ -710,9 +715,7 @@
       const thousandYears = new Audio(
         "assets/audio/Christina Perri - A Thousand Years.mp3",
       );
-      const poemAudio = new Audio(
-        "assets/audio/Palabras Marbey amplificado.ogg",
-      );
+      const poemAudio = new Audio("assets/audio/Voz en Off Marbey.mp3");
       thousandYears.volume = 0.1;
       poemAudio.volume = 1.0;
       poemAudio.playbackRate = 1.0;
@@ -761,86 +764,94 @@
       const poemLines = [
         {
           text: "Hija mía, hoy quiero decirte algo que tal vez no te lo digo todos los días,",
-          start: 2,
-          end: 14,
+          start: 0,
+          end: 8,
         },
-        { text: "pero que siento en cada momento.", start: 14, end: 18 },
+        {
+          text: "pero que siento en cada momento.",
+          start: 8,
+          end: 12,
+        },
         {
           text: "Eres lo mejor que me ha pasado en la vida.",
-          start: 18,
-          end: 22,
+          start: 12,
+          end: 16,
         },
         {
           text: "Verte crecer, aprender, reír y convertirte en la persona tan hermosa que eres",
-          start: 22,
-          end: 26,
+          start: 16,
+          end: 19,
         },
         {
           text: "llena mi corazón de un orgullo que no puedo explicar con palabras.",
-          start: 26,
-          end: 26,
+          start: 19,
+          end: 22,
         },
         {
           text: "A tus 14 años estás en una etapa hermosa, llena de sueños, cambios y descubrimientos.",
-          start: 28,
-          end: 38,
+          start: 22,
+          end: 32,
         },
         {
           text: "Quiero que nunca olvides lo valiosa que eres,",
-          start: 38,
-          end: 45,
+          start: 32,
+          end: 38,
         },
         {
           text: "lo fuerte que puedes ser y lo capaz que eres de lograr todo lo que te propongas.",
-          start: 45,
-          end: 52,
+          start: 38,
+          end: 44,
         },
         {
           text: "Cree siempre en ti, incluso cuando el mundo parezca difícil.",
-          start: 52,
-          end: 58,
+          start: 44,
+          end: 49,
         },
         {
           text: "Recuerda que no tienes que ser perfecta para ser increíble.",
-          start: 58,
-          end: 64,
+          start: 49,
+          end: 54,
         },
         {
           text: "Tus errores también te enseñan, tus lágrimas también te hacen más fuerte,",
-          start: 64,
-          end: 71,
+          start: 54,
+          end: 55,
         },
         {
           text: "y cada paso que das te acerca a la mujer maravillosa que estás destinada a ser.",
-          start: 71,
-          end: 71,
+          start: 55,
+          end: 57,
         },
         {
           text: "Siempre voy a estar para ti, en tus alegrías, en tus dudas,",
-          start: 72,
-          end: 79,
+          start: 57,
+          end: 63,
         },
         {
           text: "en tus momentos difíciles, en tus triunfos.",
-          start: 79,
-          end: 85,
+          start: 63,
+          end: 68,
         },
         {
           text: "No importa lo que pase, nunca estarás sola.",
-          start: 85,
-          end: 86,
+          start: 68,
+          end: 69,
         },
         {
           text: "Y sobre todo, quiero que nunca olvides cuánto te amo, mi niña bonita.",
-          start: 86,
-          end: 95,
+          start: 69,
+          end: 76,
         },
         {
           text: "Te amo con todo mi corazón, con cada parte de mi vida, hoy y siempre.",
-          start: 95,
-          end: 101,
+          start: 76,
+          end: 79,
         },
-        { text: "Te amo. Cachetes de mi vida.", start: 101, end: 106 },
+        {
+          text: "Te amo. Cachetes de mi vida.",
+          start: 79,
+          end: 83,
+        },
       ];
 
       function startPoemScene() {
@@ -859,9 +870,12 @@
         const lyricsBox = document.createElement("div");
         lyricsBox.id = "lyrics-box";
         lyricsBox.style.cssText = `
-    position:absolute;bottom:80px;left:50%;transform:translateX(-50%);
-    width:80%;max-width:650px;text-align:center;z-index:15;
-  `;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:90%;max-width:650px;
+  text-align:center;z-index:15;
+  padding: 0 1rem;
+`;
 
         poemScreen.appendChild(poemCanvas);
         poemScreen.appendChild(lyricsBox);
@@ -887,52 +901,75 @@
         function getTextParticles(text) {
           const off = document.createElement("canvas");
           off.width = pc.width;
-          off.height = 200;
+          off.height = pc.height;
           const octx = off.getContext("2d");
-          const fontSize = Math.min(pc.width * 0.08, 72);
-          octx.font = `700 ${fontSize}px 'Playfair Display', serif`;
+          const fontSize = 55;
+          octx.font = `400 ${fontSize}px Georgia, serif`;
           octx.fillStyle = "#fff";
           octx.textAlign = "center";
           octx.textBaseline = "middle";
-          octx.fillText(text, off.width / 2, 100);
-          const data = octx.getImageData(0, 0, off.width, 200).data;
+          const isMobile = pc.width < 600;
+          if (isMobile) {
+            const words = text.split(" ");
+            const mid = Math.ceil(words.length / 2);
+            const line1 = words.slice(0, mid).join(" ");
+            const line2 = words.slice(mid).join(" ");
+            const fontSize2 = 55;
+            octx.font = `400 ${fontSize2}px Georgia, serif`;
+            const lineHeight = fontSize2 * 1.4;
+            octx.fillText(
+              line1,
+              off.width / 2,
+              off.height / 2 - lineHeight / 2,
+            );
+            octx.fillText(
+              line2,
+              off.width / 2,
+              off.height / 2 + lineHeight / 2,
+            );
+          } else {
+            octx.fillText(text, off.width / 2, off.height / 2);
+          }
+          const data = octx.getImageData(0, 0, off.width, off.height).data;
           const pts = [];
-          for (let y = 0; y < 200; y += 4) {
-            for (let x = 0; x < off.width; x += 4) {
+          for (let y = 0; y < off.height; y += 3.5) {
+            for (let x = 0; x < off.width; x += 3.5) {
               if (data[(y * off.width + x) * 4 + 3] > 128) {
-                pts.push({ tx: x, ty: pc.height / 2 - 60 + y });
+                pts.push({ tx: x, ty: y });
               }
             }
           }
           return pts;
         }
-
         // Crear partículas del texto
         function buildTextParticles() {
           textParticles.length = 0;
-          const pts = getTextParticles("Feliz Cumpleaños Sofi");
+          const pts = getTextParticles("Feliz Cumpleaños Cachetes");
           pts.forEach((p) => {
             textParticles.push({
               x: Math.random() * pc.width,
               y: Math.random() * pc.height,
               tx: p.tx,
               ty: p.ty,
-              size: Math.random() * 2 + 1,
+              size: Math.random() * 1.6 + 0.8,
               color: `hsl(${Math.random() * 60 + 300},100%,${Math.random() * 30 + 60}%)`,
               speed: Math.random() * 0.015 + 0.005,
               trail: [],
             });
           });
         }
-        buildTextParticles();
+
+        document.fonts.load(`700 72px Georgia`).then(() => {
+          buildTextParticles();
+        });
 
         // Partículas del corazón
         const heartParts = [];
         function buildHeartParticles() {
           heartParts.length = 0;
           const scale = Math.min(pc.width, pc.height) * 0.028;
-          for (let i = 0; i < 300; i++) {
-            const t = (i / 300) * 2 * Math.PI;
+          for (let i = 0; i < 600; i++) {
+            const t = (i / 600) * 2 * Math.PI;
             heartParts.push({
               tx: pc.width / 2 + heartX(t) * scale,
               ty: pc.height / 2 + heartY(t) * scale,
@@ -947,23 +984,27 @@
 
         let heartGathered = false;
         let heartTimer = 0;
+
         function buildFinalText(parts, canvas, ctx) {
           const off = document.createElement("canvas");
-          off.width = canvas.width;
+          off.width = 800;
           off.height = 200;
           const octx = off.getContext("2d");
-          const fontSize = Math.min(canvas.width * 0.1, 90);
-          octx.font = `700 ${fontSize}px 'Playfair Display', serif`;
+          const fontSize = 65;
+          octx.font = `400 ${fontSize}px Georgia, serif`;
           octx.fillStyle = "#fff";
           octx.textAlign = "center";
           octx.textBaseline = "middle";
-          octx.fillText("Te amo, hija", off.width / 2, 100);
-          const data = octx.getImageData(0, 0, off.width, 200).data;
+          octx.fillText("Te amo hija", off.width / 2, off.height / 2);
+          const data = octx.getImageData(0, 0, off.width, off.height).data;
           const pts = [];
-          for (let y = 0; y < 200; y += 4) {
+          for (let y = 0; y < off.height; y += 4) {
             for (let x = 0; x < off.width; x += 4) {
               if (data[(y * off.width + x) * 4 + 3] > 128) {
-                pts.push({ tx: x, ty: canvas.height / 2 - 60 + y });
+                pts.push({
+                  tx: canvas.width / 2 - off.width / 2 + x,
+                  ty: canvas.height / 2 - off.height / 2 + y,
+                });
               }
             }
           }
@@ -971,8 +1012,10 @@
             const target = pts[i % pts.length];
             p.tx = target.tx;
             p.ty = target.ty;
-            p.speed = Math.random() * 0.03 + 0.01;
+            p.speed = Math.random() * 0.02 + 0.008;
           });
+          heartGathered = false;
+          phase = "text_final";
         }
         function animatePoem() {
           requestAnimationFrame(animatePoem);
@@ -993,7 +1036,7 @@
                 allArrived = false;
               }
               // Brillo neón
-              pctx.shadowBlur = 8;
+              pctx.shadowBlur = 5;
               pctx.shadowColor = p.color;
               pctx.beginPath();
               pctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -1063,7 +1106,7 @@
         setTimeout(() => {
           let vol = thousandYears.volume;
           const fadeDown = setInterval(() => {
-            vol = Math.max(0.05, vol - 0.01);
+            vol = Math.max(0.18, vol - 0.01);
             thousandYears.volume = vol;
             if (vol <= 0.05) clearInterval(fadeDown);
           }, 100);
@@ -1085,17 +1128,17 @@
 
           // Cuando termina el poema sube volumen
           poemAudio.addEventListener("ended", () => {
-            let vol2 = 0.3;
+            let vol2 = thousandYears.volume;
             const fadeUp = setInterval(() => {
-              vol2 = Math.min(0.8, vol2 + 0.05);
+              vol2 = Math.min(0.8, vol2 + 0.02);
               thousandYears.volume = vol2;
               if (vol2 >= 0.8) clearInterval(fadeUp);
-            }, 200);
+            }, 150);
 
             // 15s después mensaje final
             setTimeout(() => {
-              heartGathered = false;
-              phase = "text_final";
+              lyricsBox.innerHTML = "";
+              lyricsBox.dataset.current = "";
               buildFinalText(heartParts, pc, pctx);
               // Fade out música
               let vol3 = thousandYears.volume;
@@ -1109,7 +1152,7 @@
               }, 100);
             }, 10000);
           });
-        }, 30000); // El poema arranca a los 30s
+        }, 25000); // El poema arranca a los 15s
       }
 
       // ── TYPEWRITER ──
@@ -1119,7 +1162,7 @@
         p.style.cssText = `
     color:#ffe0eb;
     font-family:'Playfair Display',serif;
-    font-size:${big ? "2rem" : "1.1rem"};
+    font-size:${big ? "1.8rem" : "0.95rem"};
     font-style:italic;
     line-height:1.6;
     text-shadow: 0 0 20px rgba(255,133,161,0.5);
