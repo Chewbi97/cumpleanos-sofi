@@ -9,6 +9,10 @@
       rel="stylesheet"
     />
     <style>
+      #poem-screen,
+      #album-screen {
+        cursor: none !important; /* Oculta el puntero en estas pantallas */
+      }
       * {
         margin: 0;
         padding: 0;
@@ -1071,29 +1075,38 @@
           heartTimer = 0;
 
         function buildFinalText(parts, canvas) {
-          // Proporcional a la pantalla, igual que getTextParticles
-          const offW = Math.floor(canvas.width * 0.8);
-          const offH = Math.floor(offW * 0.35);
+          // Definimos un margen de seguridad (85% del ancho del canvas)
+          const margin = 0.85;
+          const offW = Math.floor(canvas.width * margin);
+          const offH = Math.floor(canvas.height * 0.4); // Altura proporcional
+
           const off = document.createElement("canvas");
           off.width = offW;
           off.height = offH;
           const octx = off.getContext("2d");
 
-          // Fuente grande y proporcional, con más espacio entre letras
-          const fontSize = Math.floor(offW * 0.16);
+          // --- CORRECCIÓN DE RECORTE ---
+          const isLandscape = canvas.width > canvas.height;
+          // Reducimos la escala de 0.08 a 0.06 en PC
+          const fontSize = isLandscape
+            ? Math.floor(canvas.width * 0.06) // Ajuste perfecto para PC
+            : Math.floor(canvas.width * 0.15); // Tamaño para Móvil (Vertical)
+
           octx.font = `400 ${fontSize}px "Playfair Display", Georgia, serif`;
           octx.fillStyle = "#fff";
           octx.textAlign = "center";
           octx.textBaseline = "middle";
-          // Espaciado de letras via letterSpacing si disponible
-          octx.letterSpacing = "4px";
+          octx.letterSpacing = isLandscape ? "8px" : "4px";
+
+          // Dibujamos el texto centrado
           octx.fillText("Te amo hija", offW / 2, offH / 2);
 
           const data = octx.getImageData(0, 0, offW, offH).data;
           const pts = [];
-          // Muestreo cada 3px igual que el texto principal
-          for (let y = 0; y < offH; y += 3) {
-            for (let x = 0; x < offW; x += 3) {
+          const step = isLandscape ? 4 : 2;
+
+          for (let y = 0; y < offH; y += step) {
+            for (let x = 0; x < offW; x += step) {
               if (data[(y * offW + x) * 4 + 3] > 128) {
                 pts.push({
                   tx: canvas.width / 2 - offW / 2 + x,
@@ -1102,16 +1115,18 @@
               }
             }
           }
+
+          // Reasignamos las partículas
           parts.forEach((p, i) => {
             const target = pts[i % pts.length];
             p.tx = target.tx;
             p.ty = target.ty;
-            p.speed = Math.random() * 0.02 + 0.008;
+            p.speed = Math.random() * 0.03 + 0.01;
           });
+
           heartGathered = false;
           phase = "text_final";
         }
-
         function animatePoem() {
           requestAnimationFrame(animatePoem);
           poemT += 0.015;
@@ -1310,6 +1325,62 @@
           setActiveDot(section);
         });
       });
+      // --- Módulo de Grabación Local ---
+      /*(function () {
+        const btnRecord = document.createElement("button");
+        btnRecord.innerHTML = "Grabar Escena 📹";
+        btnRecord.style.cssText = `
+        position: fixed; top: 20px; right: 20px; z-index: 9999;
+        padding: 12px 20px; background: #be185d; color: white;
+        border: none; border-radius: 30px; cursor: pointer;
+        font-family: 'Segoe UI', sans-serif; font-weight: bold;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s;
+    `;
+        document.body.appendChild(btnRecord);
+
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        btnRecord.onclick = () => {
+          if (!mediaRecorder || mediaRecorder.state === "inactive") {
+            // Buscamos el canvas que se esté usando (el de fotos o el del poema)
+            const activeCanvas =
+              document.getElementById("poem-canvas") ||
+              document.getElementById("album-canvas");
+
+            // Captura a 30 FPS para que sea fluido pero no pesado
+            const stream = activeCanvas.captureStream(30);
+
+            // Configuramos el grabador
+            mediaRecorder = new MediaRecorder(stream, {
+              mimeType: "video/webm;codecs=vp9",
+            });
+
+            mediaRecorder.ondataavailable = (e) => {
+              if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+              const blob = new Blob(recordedChunks, { type: "video/webm" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `Sofi_Recuerdo_${new Date().getTime()}.webm`;
+              a.click();
+              recordedChunks = [];
+            };
+
+            mediaRecorder.start();
+            btnRecord.innerHTML = "⏹️ Detener y Guardar";
+            btnRecord.style.background = "#5a1028";
+            console.log("Grabación iniciada en el canvas:", activeCanvas.id);
+          } else {
+            mediaRecorder.stop();
+            btnRecord.innerHTML = "Grabar Escena 📹";
+            btnRecord.style.background = "#be185d";
+          }
+        };
+      })();*/
     </script>
   </body>
 </html>
