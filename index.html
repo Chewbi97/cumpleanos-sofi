@@ -9,10 +9,6 @@
       rel="stylesheet"
     />
     <style>
-      #poem-screen,
-      #album-screen {
-        cursor: none !important; /* Oculta el puntero en estas pantallas */
-      }
       * {
         margin: 0;
         padding: 0;
@@ -202,7 +198,7 @@
     ></canvas>
 
     <div id="welcome-screen">
-      <h1>Feliz Cumpleaños Sofi 🎂</h1>
+      <h1>Feliz Cumpleaños, Sofi 🎂</h1>
       <p>Un regalo hecho con amor</p>
       <button id="start-btn">Abre tu regalo ✨</button>
     </div>
@@ -225,105 +221,93 @@
         {
           year: "2012",
           phrase: "El inicio de tu historia ✨",
-          photos: [
-            "assets/fotos/0/foto1.jpeg",
-            "assets/fotos/0/foto2.jpeg",
-            "assets/fotos/0/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/0/foto1.jpg", "assets/fotos/0/foto2.jpg"],
         },
         {
           year: "2013",
           phrase: "Cada día más tú 🌸",
-          photos: ["assets/fotos/1/foto1.jpeg", "assets/fotos/1/foto2.jpeg"],
+          photos: ["assets/fotos/1/foto1.jpg", "assets/fotos/1/foto2.jpg"],
         },
         {
           year: "2014",
           phrase: "Creciendo con gracia 🌷",
-          photos: ["assets/fotos/2/foto1.jpeg", "assets/fotos/2/foto2.jpeg"],
+          photos: [
+            "assets/fotos/2/foto1.jpg",
+            "assets/fotos/2/foto2.jpg",
+            "assets/fotos/2/foto3.jpg",
+          ],
         },
         {
           year: "2015",
           phrase: "Llena de luz y alegría ☀️",
-          photos: [
-            "assets/fotos/3/foto1.jpeg",
-            "assets/fotos/3/foto2.jpeg",
-            "assets/fotos/3/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/3/foto1.jpg", "assets/fotos/3/foto2.jpg"],
         },
         {
           year: "2016",
           phrase: "Tu sonrisa lo ilumina todo 😊",
-          photos: [
-            "assets/fotos/4/foto1.jpeg",
-            "assets/fotos/4/foto2.jpeg",
-            "assets/fotos/4/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/4/foto1.jpg", "assets/fotos/4/foto2.jpg"],
         },
         {
           year: "2017",
           phrase: "Aventuras sin fin 🌟",
-          photos: ["assets/fotos/5/foto1.png", "assets/fotos/5/foto2.jpeg"],
+          photos: [
+            "assets/fotos/5/foto1.jpg",
+            "assets/fotos/5/foto2.jpg",
+            "assets/fotos/5/foto3.jpg",
+          ],
         },
         {
           year: "2018",
           phrase: "Tan valiente, tan especial 💫",
-          photos: [
-            "assets/fotos/6/foto1.jpeg",
-            "assets/fotos/6/foto2.jpeg",
-            "assets/fotos/6/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/6/foto1.jpg", "assets/fotos/6/foto2.jpg"],
         },
         {
           year: "2019",
           phrase: "El mundo es tuyo 🌍",
-          photos: ["assets/fotos/7/foto1.jpeg", "assets/fotos/7/foto2.jpeg"],
+          photos: ["assets/fotos/7/foto1.jpg", "assets/fotos/7/foto2.jpg"],
         },
         {
           year: "2020",
           phrase: "Brillando a tu manera ⭐",
           photos: [
-            "assets/fotos/8/foto1.jpeg",
-            "assets/fotos/8/foto2.jpeg",
-            "assets/fotos/8/foto3.jpeg",
+            "assets/fotos/8/foto1.jpg",
+            "assets/fotos/8/foto2.jpg",
+            "assets/fotos/8/foto3.jpg",
           ],
         },
         {
           year: "2021",
           phrase: "Fuerte ante todo 💪",
-          photos: [
-            "assets/fotos/9/foto1.jpeg",
-            "assets/fotos/9/foto2.jpeg",
-            "assets/fotos/9/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/9/foto1.jpg", "assets/fotos/9/foto2.jpg"],
         },
         {
           year: "2022",
           phrase: "Más hermosa cada día 🌺",
-          photos: ["assets/fotos/10/foto1.jpeg", "assets/fotos/10/foto2.jpeg"],
+          photos: ["assets/fotos/10/foto1.jpg", "assets/fotos/10/foto2.jpg"],
         },
         {
           year: "2023",
           phrase: "Tu historia sigue escribiéndose 📖",
-          photos: ["assets/fotos/11/foto1.jpeg", "assets/fotos/11/foto2.jpeg"],
+          photos: [
+            "assets/fotos/11/foto1.jpg",
+            "assets/fotos/11/foto2.jpg",
+            "assets/fotos/11/foto3.jpg",
+          ],
         },
         {
           year: "2024",
           phrase: "Imparable 🚀",
-          photos: [
-            "assets/fotos/12/foto1.jpeg",
-            "assets/fotos/12/foto2.jpeg",
-            "assets/fotos/12/foto3.jpeg",
-          ],
+          photos: ["assets/fotos/12/foto1.jpg", "assets/fotos/12/foto2.jpg"],
         },
         {
           year: "2025",
           phrase: "Maravillando mi mundo 🎆",
-          photos: ["assets/fotos/13/foto1.jpeg", "assets/fotos/13/foto2.jpeg"],
+          photos: ["assets/fotos/13/foto1.jpg", "assets/fotos/13/foto2.jpg"],
         },
         {
           year: "2026",
           phrase: "14 años de pura magia 🎂",
-          photos: ["assets/fotos/14/foto1.jpeg"],
+          photos: ["assets/fotos/14/foto1.jpg", "assets/fotos/14/foto2.jpg"],
         },
       ];
 
@@ -974,8 +958,16 @@
 
         const pc = poemCanvas;
         const pctx = pc.getContext("2d");
-        pc.width = window.innerWidth;
-        pc.height = window.innerHeight;
+        // pcW/pcH = dimensiones LÓGICAS (CSS pixels) — para TODOS los cálculos
+        const pcW = window.innerWidth;
+        const pcH = window.innerHeight;
+        // Canvas físico escalado con DPR para nitidez en móvil
+        const dpr = window.devicePixelRatio || 1;
+        pc.width = pcW * dpr;
+        pc.height = pcH * dpr;
+        pc.style.width = pcW + "px";
+        pc.style.height = pcH + "px";
+        pctx.scale(dpr, dpr);
 
         thousandYears.play();
         thousandYears.volume = 0.8;
@@ -985,48 +977,38 @@
         let poemT = 0;
         let textFormed = false;
 
-        // ── FUNCIÓN CORREGIDA: tamaño proporcional, muestreo balanceado ──
         function getTextParticles(text) {
-          // Canvas proporcional a la pantalla real, con margen lateral
-          const margin = 0.8;
-          const offW = Math.floor(pc.width * margin);
-          // Altura generosa para acomodar 2 líneas sin recorte
-          const offH = Math.floor(offW * 0.5);
+          // offW basado en dimensiones LÓGICAS (pcW)
+          const offW = Math.floor(pcW * 0.88);
+          const offH = Math.floor(offW * 0.52);
 
           const off = document.createElement("canvas");
           off.width = offW;
           off.height = offH;
           const octx = off.getContext("2d");
 
-          // Fuente proporcional: ocupa ~35% del ancho por línea
-          const fontSize = Math.floor(offW * 0.1);
+          const fontSize = Math.floor(offW * 0.115);
           octx.font = `700 ${fontSize}px "Playfair Display", Georgia, serif`;
           octx.fillStyle = "#fff";
           octx.textAlign = "center";
           octx.textBaseline = "middle";
 
-          // Siempre dividir en 2 líneas para que quepa bien
-          const words = text.split(" ");
-          const mid = Math.ceil(words.length / 2);
-          const line1 = words.slice(0, mid).join(" ");
-          const line2 = words.slice(mid).join(" ");
+          // Líneas fijas — sin cortes raros en móvil
+          const line1 = "Feliz Cumpleaños";
+          const line2 = "Cachetes";
           const lineH = fontSize * 1.35;
           octx.fillText(line1, offW / 2, offH / 2 - lineH / 2);
           octx.fillText(line2, offW / 2, offH / 2 + lineH / 2);
 
           const data = octx.getImageData(0, 0, offW, offH).data;
           const pts = [];
-
-          // Muestreo cada 3px: buen balance entre densidad y rendimiento
           const step = 3;
           for (let y = 0; y < offH; y += step) {
             for (let x = 0; x < offW; x += step) {
-              const idx = (Math.floor(y) * offW + Math.floor(x)) * 4;
-              if (data[idx + 3] > 128) {
-                // Centrar el bloque de texto en la pantalla
+              if (data[(Math.floor(y) * offW + Math.floor(x)) * 4 + 3] > 128) {
                 pts.push({
-                  tx: pc.width / 2 - offW / 2 + x,
-                  ty: pc.height / 2 - offH / 2 + y,
+                  tx: pcW / 2 - offW / 2 + x, // centrado en lógico
+                  ty: pcH / 2 - offH / 2 + y,
                 });
               }
             }
@@ -1039,14 +1021,12 @@
           const pts = getTextParticles("Feliz Cumpleaños Cachetes");
           pts.forEach((p) => {
             textParticles.push({
-              x: Math.random() * pc.width,
-              y: Math.random() * pc.height,
+              x: Math.random() * pcW, // posición inicial en lógico
+              y: Math.random() * pcH,
               tx: p.tx,
               ty: p.ty,
-              // Partículas más grandes para mejor visibilidad
               size: Math.random() * 2.2 + 1.5,
               color: `hsl(${Math.random() * 60 + 300},100%,${Math.random() * 30 + 60}%)`,
-              // Velocidad alta: llegan en ~3-4 segundos
               speed: Math.random() * 0.08 + 0.06,
             });
           });
@@ -1056,14 +1036,15 @@
         const heartParts = [];
         function buildHeartParticles() {
           heartParts.length = 0;
-          const scale = Math.min(pc.width, pc.height) * 0.028;
+          // Usar dimensiones LÓGICAS pcW/pcH para el centrado
+          const scale = Math.min(pcW, pcH) * 0.028;
           for (let i = 0; i < 600; i++) {
             const t = (i / 600) * 2 * Math.PI;
             heartParts.push({
-              tx: pc.width / 2 + heartX(t) * scale,
-              ty: pc.height / 2 + heartY(t) * scale,
-              x: Math.random() * pc.width,
-              y: Math.random() * pc.height,
+              tx: pcW / 2 + heartX(t) * scale,
+              ty: pcH / 2 + heartY(t) * scale,
+              x: Math.random() * pcW,
+              y: Math.random() * pcH,
               size: Math.random() * 2.5 + 1,
               color: `hsl(${Math.random() * 40 + 320},90%,${Math.random() * 30 + 55}%)`,
               speed: Math.random() * 0.04 + 0.02,
@@ -1074,65 +1055,52 @@
         let heartGathered = false,
           heartTimer = 0;
 
-        function buildFinalText(parts, canvas) {
-          // Definimos un margen de seguridad (85% del ancho del canvas)
-          const margin = 0.85;
-          const offW = Math.floor(canvas.width * margin);
-          const offH = Math.floor(canvas.height * 0.4); // Altura proporcional
-
+        function buildFinalText(parts) {
+          // Usar dimensiones LÓGICAS pcW/pcH
+          const offW = Math.floor(pcW * 0.82);
+          const offH = Math.floor(offW * 0.38);
           const off = document.createElement("canvas");
           off.width = offW;
           off.height = offH;
           const octx = off.getContext("2d");
 
-          // --- CORRECCIÓN DE RECORTE ---
-          const isLandscape = canvas.width > canvas.height;
-          // Reducimos la escala de 0.08 a 0.06 en PC
-          const fontSize = isLandscape
-            ? Math.floor(canvas.width * 0.06) // Ajuste perfecto para PC
-            : Math.floor(canvas.width * 0.15); // Tamaño para Móvil (Vertical)
-
+          const fontSize = Math.floor(offW * 0.16);
           octx.font = `400 ${fontSize}px "Playfair Display", Georgia, serif`;
           octx.fillStyle = "#fff";
           octx.textAlign = "center";
           octx.textBaseline = "middle";
-          octx.letterSpacing = isLandscape ? "8px" : "4px";
-
-          // Dibujamos el texto centrado
+          octx.letterSpacing = "4px";
           octx.fillText("Te amo hija", offW / 2, offH / 2);
 
           const data = octx.getImageData(0, 0, offW, offH).data;
           const pts = [];
-          const step = isLandscape ? 4 : 2;
-
-          for (let y = 0; y < offH; y += step) {
-            for (let x = 0; x < offW; x += step) {
+          for (let y = 0; y < offH; y += 3) {
+            for (let x = 0; x < offW; x += 3) {
               if (data[(y * offW + x) * 4 + 3] > 128) {
                 pts.push({
-                  tx: canvas.width / 2 - offW / 2 + x,
-                  ty: canvas.height / 2 - offH / 2 + y,
+                  tx: pcW / 2 - offW / 2 + x, // centrado en lógico
+                  ty: pcH / 2 - offH / 2 + y,
                 });
               }
             }
           }
-
-          // Reasignamos las partículas
           parts.forEach((p, i) => {
             const target = pts[i % pts.length];
             p.tx = target.tx;
             p.ty = target.ty;
-            p.speed = Math.random() * 0.03 + 0.01;
+            p.speed = Math.random() * 0.02 + 0.008;
           });
-
           heartGathered = false;
           phase = "text_final";
         }
+
         function animatePoem() {
           requestAnimationFrame(animatePoem);
           poemT += 0.015;
-          pctx.clearRect(0, 0, pc.width, pc.height);
+          // clearRect y fillRect usan dimensiones LÓGICAS (pctx ya tiene scale(dpr))
+          pctx.clearRect(0, 0, pcW, pcH);
           pctx.fillStyle = "#1a0a10";
-          pctx.fillRect(0, 0, pc.width, pc.height);
+          pctx.fillRect(0, 0, pcW, pcH);
 
           if (phase === "text") {
             let allArrived = true;
@@ -1239,7 +1207,7 @@
             setTimeout(() => {
               lyricsBox.innerHTML = "";
               lyricsBox.dataset.current = "";
-              buildFinalText(heartParts, pc);
+              buildFinalText(heartParts);
               let vol3 = thousandYears.volume;
               const fadeOut = setInterval(() => {
                 vol3 = Math.max(0, vol3 - 0.005);
@@ -1325,62 +1293,6 @@
           setActiveDot(section);
         });
       });
-      // --- Módulo de Grabación Local ---
-      /*(function () {
-        const btnRecord = document.createElement("button");
-        btnRecord.innerHTML = "Grabar Escena 📹";
-        btnRecord.style.cssText = `
-        position: fixed; top: 20px; right: 20px; z-index: 9999;
-        padding: 12px 20px; background: #be185d; color: white;
-        border: none; border-radius: 30px; cursor: pointer;
-        font-family: 'Segoe UI', sans-serif; font-weight: bold;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.3s;
-    `;
-        document.body.appendChild(btnRecord);
-
-        let mediaRecorder;
-        let recordedChunks = [];
-
-        btnRecord.onclick = () => {
-          if (!mediaRecorder || mediaRecorder.state === "inactive") {
-            // Buscamos el canvas que se esté usando (el de fotos o el del poema)
-            const activeCanvas =
-              document.getElementById("poem-canvas") ||
-              document.getElementById("album-canvas");
-
-            // Captura a 30 FPS para que sea fluido pero no pesado
-            const stream = activeCanvas.captureStream(30);
-
-            // Configuramos el grabador
-            mediaRecorder = new MediaRecorder(stream, {
-              mimeType: "video/webm;codecs=vp9",
-            });
-
-            mediaRecorder.ondataavailable = (e) => {
-              if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-              const blob = new Blob(recordedChunks, { type: "video/webm" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = `Sofi_Recuerdo_${new Date().getTime()}.webm`;
-              a.click();
-              recordedChunks = [];
-            };
-
-            mediaRecorder.start();
-            btnRecord.innerHTML = "⏹️ Detener y Guardar";
-            btnRecord.style.background = "#5a1028";
-            console.log("Grabación iniciada en el canvas:", activeCanvas.id);
-          } else {
-            mediaRecorder.stop();
-            btnRecord.innerHTML = "Grabar Escena 📹";
-            btnRecord.style.background = "#be185d";
-          }
-        };
-      })();*/
     </script>
   </body>
 </html>
